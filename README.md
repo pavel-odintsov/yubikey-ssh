@@ -1,3 +1,7 @@
+# NB!
+
+Please use official (https://github.com/jamesog/yubikey-ssh)[repo] in any case
+
 # Yubikey as an SSH key
 
 All other guides I've seen (https://github.com/drduh/YubiKey-Guide being the most prolific) tell you to use the Yubikey's smartcard (PKCS#11) features with GnuPG via gpg-agent.
@@ -77,13 +81,13 @@ This is an RSA 2048-bit key by default. Depending which Yubikey you have, you ca
 3. Generate a self-signed X.509 certificate
 
 ```
-ykman piv generate-certificate -s "SSH key" 9a pubkey.pem
+ykman piv generate-certificate -s "SSH key" --valid-days 36500 9a pubkey.pem
 ```
 
 4. Export your SSH public key from the Yubikey
 
 ```
-ssh-keygen -D /usr/local/lib/opensc-pkcs11.so
+ssh-keygen -D /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
 ```
 
 And that's all the hard stuff done. 
@@ -91,7 +95,7 @@ And that's all the hard stuff done.
 Now just add the public key to your `authorized_keys` file on a remote host and try to use it:
 
 ```
-ssh -I /usr/local/lib/opensc-pkcs11.so -i /usr/local/lib/opensc-pkcs11.so -o IdentitiesOnly=yes server.example.com
+ssh -I /usr/local/lib/opensc-pkcs11.so -i /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so -o IdentitiesOnly=yes server.example.com
 ```
 
 You should be prompted for your Yubikey's PIV PIN.
@@ -99,7 +103,7 @@ You should be prompted for your Yubikey's PIV PIN.
 You can add the PKCS11 library to `ssh-agent`.
 
 ```
-ssh-add -s /usr/local/lib/opensc-pkcs11.so
+ssh-add -s /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
 ```
 
 Once more you will be prompted for your PIN, and from there SSH authentication will happen as usual.
@@ -108,7 +112,7 @@ To configure `ssh` to use the Yubikey's SSH key, use the `PKCS11Provider` config
 
 ```
 Host foo
-  PKCS11Provider /usr/local/lib/opensc-pkcs11.so
+  PKCS11Provider /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
   IdentitiesOnly yes
 ````
 
@@ -119,8 +123,8 @@ Host foo
 - If you remove the key from ssh-agent using `ssh-add -d` or `ssh-add -D`, you'll have to either remove and re-add the PKCS library to the agent or restart the agent. 
   - To re-add the library run
     ```
-    ssh-add -e /usr/local/lib/opensc-pkcs11.so
-    ssh-add -s /usr/local/lib/opensc-pkcs11.so
+    ssh-add -e /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
+    ssh-add -s /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
     ```
   - On macOS, you can restart the agent with
     ```

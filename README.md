@@ -1,6 +1,6 @@
 # NB!
 
-Please use official )https://github.com/jamesog/yubikey-ssh) in any case
+Please use official (https://github.com/jamesog/yubikey-ssh) in any case
 
 # Yubikey as an SSH key
 

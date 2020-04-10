@@ -116,6 +116,16 @@ Host foo
   IdentitiesOnly yes
 ````
 
+###  How to avoid PIN question every time when you use ssh?
+
+You [can](https://gist.github.com/Wesseldr/964e88b531f4583decb34fec552c93e9) add following into .bash_profile:
+```
+ssh-add -L | grep "The agent has no identities" > /dev/null
+if [ $? -eq 0 ]; then
+        ssh-add -s /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
+fi 
+```
+
 ## Additional notes
 
 - When SSHing, you may get prompted with the key's subject name, like `Enter PIN for 'SSH key':`. But if you add the key to the agent, you'll get a prompt like `Enter passphrase for PKCS#11:`. These are the same PIN (your PIV PIN).
